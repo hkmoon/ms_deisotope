@@ -869,6 +869,13 @@ class MzMLSerializer(ScanSerializerBase):
 
         spectrum_params.extend(self._get_annotations(scan))
 
+        other_array = self._prepare_extra_arrays(scan, deconvoluted=deconvoluted)
+
+        extra_array = kwargs.get("extra_array")
+
+        if extra_array:
+            other_array = extra_array + other_array
+
         self.writer.write_spectrum(
             mz_array, intensity_array,
             charge_array,
@@ -877,7 +884,7 @@ class MzMLSerializer(ScanSerializerBase):
             polarity=polarity,
             scan_start_time=scan.scan_time,
             compression=self.compression,
-            other_arrays=self._prepare_extra_arrays(scan, deconvoluted=deconvoluted),
+            other_arrays=other_array,
             instrument_configuration_id=instrument_config_id,
             precursor_information=precursor_information,
             scan_params=scan_parameters,
